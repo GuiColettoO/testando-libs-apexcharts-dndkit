@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -6,75 +6,97 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   SortableContext,
   sortableKeyboardCoordinates,
   arrayMove,
-} from '@dnd-kit/sortable';
-import { v4 as uuidv4 } from 'uuid';
+} from "@dnd-kit/sortable";
+import { v4 as uuidv4 } from "uuid";
 
-
-import { SortableItem } from './SortableItem';
-import { Header } from './Header';
-import { CircularChart } from './CircularChart';
-import { LineChart } from './LineChart';
-import { AreaChart } from './AreaChart';
-import { ColumnChart } from './ColumnChart';
-import { MultiAxisChart } from './MultiAxisChart';
-import { GaugeChart } from './GaugeChart';
+import { SortableItem } from "./SortableItem";
+import { Header } from "./Header";
+import { CircularChart } from "./CircularChart";
+import { LineChart } from "./LineChart";
+import { AreaChart } from "./AreaChart";
+import { ColumnChart } from "./ColumnChart";
+import { MultiAxisChart } from "./MultiAxisChart";
+import { GaugeChart } from "./GaugeChart";
 
 export const Dashboard = () => {
-
   const [items, setItems] = useState([]);
 
   const handleNewCircularChart = () => {
-    setItems([...items, {
-      id: uuidv4(),
-      name: items.length + 1,
-      chart: <CircularChart />
-    }])
-  }
+    setItems([
+      ...items,
+      {
+        id: uuidv4(),
+        name: items.length + 1,
+        type: "circular",
+        chart: <CircularChart />,
+      },
+    ]);
+  };
 
   const handleNewGaugeChart = () => {
-    setItems([...items, {
-      id: uuidv4(),
-      name: items.length + 1,
-      chart: <GaugeChart />
-    }])
-  }
+    setItems([
+      ...items,
+      {
+        id: uuidv4(),
+        name: items.length + 1,
+        type: "gauge",
+        chart: <GaugeChart />,
+      },
+    ]);
+  };
 
   const handleNewLineChart = () => {
-    setItems([...items, {
-      id: uuidv4(),
-      name: items.length + 1,
-      chart: <LineChart />
-    }])
-  }
+    setItems([
+      ...items,
+      {
+        id: uuidv4(),
+        name: items.length + 1,
+        type: "line",
+        chart: <LineChart />,
+      },
+    ]);
+  };
 
   const handleNewAreaChart = () => {
-    setItems([...items, {
-      id: uuidv4(),
-      name: items.length + 1,
-      chart: <AreaChart />
-    }])
-  }
+    setItems([
+      ...items,
+      {
+        id: uuidv4(),
+        name: items.length + 1,
+        type: "area",
+        chart: <AreaChart />,
+      },
+    ]);
+  };
 
   const handleNewColumnChart = () => {
-    setItems([...items, {
-      id: uuidv4(),
-      name: items.length + 1,
-      chart: <ColumnChart />
-    }])
-  }
+    setItems([
+      ...items,
+      {
+        id: uuidv4(),
+        name: items.length + 1,
+        type: "column",
+        chart: <ColumnChart />,
+      },
+    ]);
+  };
 
   const handleNewMultiAxisChart = () => {
-    setItems([...items, {
-      id: uuidv4(),
-      name: items.length + 1,
-      chart: <MultiAxisChart />
-    }])
-  }
+    setItems([
+      ...items,
+      {
+        id: uuidv4(),
+        name: items.length + 1,
+        type: "multi-axis",
+        chart: <MultiAxisChart />,
+      },
+    ]);
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -85,19 +107,32 @@ export const Dashboard = () => {
 
   const styles = {
     grid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(370px, 1fr))',
-      gap: '1rem',
-      margin: '1rem'
-    }
-  }
+      display: "grid",
+      gridTemplateColumns: "repeat(4, 1fr)", // 4 colunas fixas no grid
+      gap: "1rem",
+      margin: "1rem",
+    },
+    item: {
+      default: {
+        backgroundColor: "#f9f9f9",
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        padding: "1rem",
+        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+      },
+      line: {
+        gridColumn: "span 3", // Ocupa 3 colunas no grid
+        backgroundColor: "#e9f7fc",
+      },
+    },
+  };
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      const oldIndex = items.findIndex(item => item.id === active.id);
-      const newIndex = items.findIndex(item => item.id === over.id);
+      const oldIndex = items.findIndex((item) => item.id === active.id);
+      const newIndex = items.findIndex((item) => item.id === over.id);
 
       const newItems = arrayMove(items, oldIndex, newIndex);
       setItems(newItems);
@@ -127,6 +162,11 @@ export const Dashboard = () => {
                 id={item.id}
                 name={item.name}
                 chart={item.chart}
+                type={item.type}
+                style={{
+                  ...styles.item.default,
+                  ...(item.type === "line" ? styles.item.line : {}),
+                }}
               />
             ))}
           </div>
@@ -134,4 +174,4 @@ export const Dashboard = () => {
       </DndContext>
     </>
   );
-}
+};
